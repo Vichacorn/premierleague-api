@@ -1,0 +1,5 @@
+OPENAPI_AUTOGEN_DIR = 'autogen'
+DB_HOST = '158.108.34.31'
+DB_USER = 'b6010545781'
+DB_PASSWD = 'thanaphon.kea@ku.th'
+DB_NAME = 'b6010545781'

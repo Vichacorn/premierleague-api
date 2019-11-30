@@ -1,0 +1,196 @@
+openapi: 3.0.0
+info:
+  title: Premier League API
+  description:
+    This API provides historical and analyze Premier League data between 2016 and 2019
+  version: 2.0.0
+servers:
+  - url: /premier-api/v2
+paths:
+  /team:
+    get:
+      summary: return a list of all team following by teamId,teamName,teamLogo
+      operationId: controller.get_team
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+  /teamById/{teamId}:
+    parameters:
+    - name: teamId
+      in: path
+      required: true
+      schema:
+        type : integer
+    get:
+      summary: Returns a specific team by id.
+      operationId: controller.get_team_by_id
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Team'
+  /teamBySeason/{seasonId}:
+    parameters:
+    - name: seasonId
+      in: path
+      required: true
+      schema:
+        type : integer
+    get:
+      summary: Returns 20 team of premier league that have all ranking.
+      operationId: controller.get_team_by_season
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamBySeason'
+  /shotOnGoalAverageBySeason/{seasonId}:
+    parameters:
+    - name: seasonId
+      in: path
+      required: true
+      schema:
+        type : integer
+    get:
+      summary: Returns a list of average shot on goal for each team by the season.
+      operationId: controller.get_shot_on_goal_by_season
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamShotOnGoalBySeason'
+  /ballPossessionAverageBySeason/{seasonId}:
+    parameters:
+    - name: seasonId
+      in: path
+      required: true
+      schema:
+        type : integer
+    get:
+      summary: Returns a list of average ball possession for each team by the season.
+      operationId: controller.get_ball_possession_by_season
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamBallPossessionBySeason'
+  /foulsAverageBySeason/{seasonId}:
+    parameters:
+    - name: seasonId
+      in: path
+      required: true
+      schema:
+        type : integer
+    get:
+      summary: Returns a list of average fouls for each team by the season.
+      operationId: controller.get_fouls_by_season
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamFoulsBySeason'
+  /passedPercentageAverageBySeason/{seasonId}:
+    parameters:
+    - name: seasonId
+      in: path
+      required: true
+      schema:
+        type : integer
+    get:
+      summary: Returns a list of average percentage of success passing ball by the season.
+      operationId: controller.get_passed_percentage_by_season
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamPassedPercentageBySeason'
+    
+components:
+  schemas:
+    Team:
+      type: object
+      properties:
+        teamId:
+          type: integer
+        teamName:
+          type: string
+        teamLogo:
+          type: string
+    TeamBySeason:
+      type: object
+      properties:
+        ranking:
+          type: integer
+        teamId:
+          type: integer
+        teamName:
+          type: string
+        teamLogo:
+          type: string
+          description: link of logo
+        win:
+          type: integer
+        loss:
+          type: integer
+        draw:
+          type: integer
+        goalsDiff:
+          type: integer
+        points:
+          type: integer
+    TeamShotOnGoalBySeason:
+      type: object
+      properties:
+        teamId:
+          type: integer
+        overallShotOnGoal:
+          type: number
+    TeamBallPossessionBySeason:
+      type: object
+      properties:
+        teamId:
+          type: integer
+        overallBallPossession:
+          type: number
+    TeamFoulsBySeason:
+      type: object
+      properties:
+        teamId:
+          type: integer
+        overallFouls:
+          type: number
+    TeamPassedPercentageBySeason:
+      type: object
+      properties:
+        teamId:
+          type: integer
+        overallBallPossession:
+          type: number
