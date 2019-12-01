@@ -318,6 +318,8 @@ components:
           type: integer
         year:
           type: string
+        ranking:
+          type: integer
         overallShotOnGoal:
           type: number
         overallBlockedShots:

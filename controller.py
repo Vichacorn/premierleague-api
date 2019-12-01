@@ -204,8 +204,8 @@ def get_total_passes_and_pass_accurate_by_season(seasonId):
 def get_statistic_all_season_by_teamId(teamId):
     with db_cursor() as cs:
         cs.execute("""
-        SELECT home.seasonId, season.year, AVG(home.shotOnGoal) AS avgShotOnGoal,AVG(home.blockedShots) AS avgBlockedShots, AVG(home.fouls) AS avgFouls, AVG(home.ballPossession) AS avgBallPossession, AVG(home.goalKeeperSaves) AS avgGoalKeeperSaves,AVG(home.totalPasses) AS avgTotalPasses, AVG(home.passAccurate) AS avgPassAccurate
-    FROM (SELECT competition.seasonId ,(statistic.shotsOnGoal->"$.home") AS shotOnGoal, (statistic.blockedShots->"$.home") AS blockedShots, (statistic.fouls->"$.home") AS fouls, (statistic.ballPossession->"$.home") AS ballPossession, 			(statistic.goalkeeperSaves->"$.home") AS goalKeeperSaves, (statistic.totalPasses->"$.home") AS totalPasses, (statistic.passAccurate->"$.home") AS passAccurate
+        SELECT home.seasonId, season.year, ranking.order, AVG(home.shotOnGoal) AS avgShotOnGoal,AVG(home.blockedShots) AS avgBlockedShots, AVG(home.fouls) AS avgFouls, AVG(home.ballPossession) AS avgBallPossession, AVG(home.goalKeeperSaves) AS avgGoalKeeperSaves,AVG(home.totalPasses) AS avgTotalPasses, AVG(home.passAccurate) AS avgPassAccurate
+    FROM (SELECT competition.seasonId, competition.home ,(statistic.shotsOnGoal->"$.home") AS shotOnGoal, (statistic.blockedShots->"$.home") AS blockedShots, (statistic.fouls->"$.home") AS fouls, (statistic.ballPossession->"$.home") AS ballPossession, 			(statistic.goalkeeperSaves->"$.home") AS goalKeeperSaves, (statistic.totalPasses->"$.home") AS totalPasses, (statistic.passAccurate->"$.home") AS passAccurate
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.seasonId = ranking.seasonId
@@ -220,7 +220,8 @@ def get_statistic_all_season_by_teamId(teamId):
       ORDER BY ranking.order
      ) AS away ON home.seasonId = away.seasonId
      INNER JOIN season ON home.seasonId = season.seasonId
-     GROUP BY home.seasonId
+     INNER JOIN ranking ON ranking.teamId = home.home AND ranking.seasonId = home.seasonId
+     GROUP BY home.seasonId, ranking.order
         """,[teamId,teamId])
 
         result = [models.StatisticOfTeamByTeamId(*row) for row in cs.fetchall()]   
