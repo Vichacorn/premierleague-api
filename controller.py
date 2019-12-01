@@ -26,6 +26,17 @@ def get_team_by_id(teamId):
         
         result = models.Team(*cs.fetchone())
         return result
+
+def get_team_by_array_id(teamId):
+    result = []
+    with db_cursor() as cs:
+        for id in teamId:
+            cs.execute("""
+            SELECT * FROM team WHERE teamId = %s
+            """,[id])
+            result.append(cs.fetchone())
+
+        return [models.Team(*row) for row in result]
         
 def get_team_by_season(seasonId):
     with db_cursor() as cs:

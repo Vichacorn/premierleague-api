@@ -37,6 +37,27 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Team'
+  /teamByArrayId/{teamId}:
+    parameters:
+    - name: teamId
+      in: path
+      required: true
+      schema:
+        type : array
+        items:
+          type: integer
+    get:
+      summary: return a list of specific team by id.
+      operationId: controller.get_team_by_array_id
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
   /teamBySeason/{seasonId}:
     parameters:
     - name: seasonId
