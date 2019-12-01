@@ -176,8 +176,33 @@ def get_blocked_shots_by_season(seasonId):
         result = [models.TeamBlockedShotsBySeason(*row) for row in cs.fetchall()]   
         return result
 
+def get_total_passes_and_pass_accurate_by_season(seasonId):
+    with db_cursor() as cs:
+        cs.execute("""
+        SELECT team.teamId,team.teamName,team.teamLogo,AVG(home.totalPasses) AS avgtotalPasses, AVG(home.passAccurate) AS avgPassAccurate
+    FROM (SELECT ranking.order,competition.home ,(statistic.totalPasses->"$.home") AS totalPasses, (statistic.passAccurate->"$.home") AS passAccurate
+	FROM competition
+	INNER JOIN statistic ON competition.compId = statistic.statisticId
+    INNER JOIN ranking ON competition.home = ranking.teamId
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
+          ORDER BY ranking.order
+     ) AS home INNER JOIN
+     (SELECT ranking.order,competition.away ,(statistic.totalPasses->"$.away") AS totalPasses, (statistic.passAccurate->"$.away") AS passAccurate
+	FROM competition
+	INNER JOIN statistic ON competition.compId = statistic.statisticId
+    INNER JOIN ranking ON competition.away = ranking.teamId
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
+      ORDER BY ranking.order
+     ) AS away ON home.home = away.away
+     INNER JOIN team ON home.home = team.teamId
+     GROUP BY home.home
+        """,[seasonId,seasonId])
+
+        result = [models.TeamPassBallBySeason(*row) for row in cs.fetchall()]   
+        return result
 
 
+# query overall statistic of team for each year 
 # SELECT home.seasonId ,AVG(home.shotOnGoal) AS avgShotOnGoal
 #     FROM (SELECT competition.seasonId ,(statistic.shotsOnGoal->"$.home") AS shotOnGoal
 # 	FROM competition

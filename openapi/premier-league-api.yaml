@@ -28,7 +28,7 @@ paths:
       schema:
         type : integer
     get:
-      summary: Returns a specific team by id.
+      summary: Returns a specific team by id.￼
       operationId: controller.get_team_by_id
       responses:
         200:
@@ -172,6 +172,25 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TeamBlockedShotsBySeason'
+  /passBallAverageBySeason/{seasonId}:
+    parameters:
+    - name: seasonId
+      in: path
+      required: true
+      schema:
+        type : integer
+    get:
+      summary: Returns a list of average total passes ball and average pass ball success of each team in select season.
+      operationId: controller.get_total_passes_and_pass_accurate_by_season
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamPassBallBySeason'
     
 components:
   schemas:
@@ -261,3 +280,17 @@ components:
           type: string
         overallBlockedShotsBySeason:
           type: number
+    TeamPassBallBySeason:
+      type: object
+      properties:
+        teamId:
+          type: integer
+        teamName:
+          type: string
+        teamLogo:
+          type: string
+        overallTotalPasses:
+          type: number
+        overallPassAccurate:
+          type: number
+
