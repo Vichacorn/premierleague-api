@@ -54,7 +54,7 @@ def get_team_by_season(seasonId):
 def get_shot_on_goal_by_season(seasonId):
     with db_cursor() as cs:
         cs.execute("""
-        SELECT home.home,AVG(home.shotOnGoal) AS avgShotOnGoal
+        SELECT team.teamId,team.teamName,team.teamLogo,AVG(home.shotOnGoal) AS avgShotOnGoal
     FROM (SELECT ranking.order,competition.home ,(statistic.shotsOnGoal->"$.home") AS shotOnGoal
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
@@ -69,7 +69,9 @@ def get_shot_on_goal_by_season(seasonId):
 	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
       ORDER BY ranking.order
      ) AS away ON home.home = away.away
-     GROUP BY home.home 
+     INNER JOIN team ON home.home = team.teamId
+     
+     GROUP BY home.home
          """,[seasonId,seasonId])
 
         result = [models.TeamShotOnGoalBySeason(*row) for row in cs.fetchall()]   
@@ -78,7 +80,7 @@ def get_shot_on_goal_by_season(seasonId):
 def get_fouls_by_season(seasonId):
     with db_cursor() as cs:
         cs.execute("""
-        SELECT home.home,AVG(home.fouls) AS avgfouls
+        SELECT team.teamId,team.teamName,team.teamLogo,AVG(home.fouls) AS avgfouls
     FROM (SELECT ranking.order,competition.home ,(statistic.fouls->"$.home") AS fouls
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
@@ -93,6 +95,7 @@ def get_fouls_by_season(seasonId):
 	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
       ORDER BY ranking.order
      ) AS away ON home.home = away.away
+     INNER JOIN team ON home.home = team.teamId
      GROUP BY home.home
         """,[seasonId,seasonId])
 
@@ -102,7 +105,7 @@ def get_fouls_by_season(seasonId):
 def get_ball_possession_by_season(seasonId):
     with db_cursor() as cs:
         cs.execute("""
-        SELECT home.home,AVG(home.BallPossession) AS avgBallPoessession
+        SELECT team.teamId,team.teamName,team.teamLogo,AVG(home.BallPossession) AS avgBallPoessession
     FROM (SELECT ranking.order,competition.home ,(statistic.ballPossession->"$.home") AS BallPossession
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
@@ -117,6 +120,7 @@ def get_ball_possession_by_season(seasonId):
 	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
       ORDER BY ranking.order
      ) AS away ON home.home = away.away
+     INNER JOIN team ON home.home = team.teamId
      GROUP BY home.home
         """,[seasonId,seasonId])
         result = [models.TeamBallPossessionBySeason(*row) for row in cs.fetchall()]   
@@ -125,7 +129,7 @@ def get_ball_possession_by_season(seasonId):
 def get_passed_percentage_by_season(seasonId):
     with db_cursor() as cs:
         cs.execute("""
-        SELECT home.home,AVG(home.passedPercentage) AS avgPassedPercentage
+        SELECT team.teamId,team.teamName,team.teamLogo,AVG(home.passedPercentage) AS avgPassedPercentage
     FROM (SELECT ranking.order,competition.home ,(statistic.passedPercentage->"$.home") AS passedPercentage
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
@@ -140,6 +144,7 @@ def get_passed_percentage_by_season(seasonId):
 	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
       ORDER BY ranking.order
      ) AS away ON home.home = away.away
+     INNER JOIN team ON home.home = team.teamId
      GROUP BY home.home
         """,[seasonId,seasonId])
 
