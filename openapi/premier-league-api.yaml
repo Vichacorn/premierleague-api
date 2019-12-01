@@ -134,7 +134,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TeamFoulsBySeason'
-  /passedPercentageAverageBySeason/{seasonId}:
+  /goalKeeperSavesAverageBySeason/{seasonId}:
     parameters:
     - name: seasonId
       in: path
@@ -142,8 +142,8 @@ paths:
       schema:
         type : integer
     get:
-      summary: Returns a list of average percentage of success passing ball by the season.
-      operationId: controller.get_passed_percentage_by_season
+      summary: Returns a list of average saves by goal keeper of each team.
+      operationId: controller.get_goal_keeper_saves_by_season
       responses:
         200:
           description: Success
@@ -152,7 +152,26 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TeamPassedPercentageBySeason'
+                  $ref: '#/components/schemas/TeamGoalKeeperSavesBySeason'
+  /blockedShotsAverageBySeason/{seasonId}:
+    parameters:
+    - name: seasonId
+      in: path
+      required: true
+      schema:
+        type : integer
+    get:
+      summary: Returns a list of average saves by goal keeper of each team.
+      operationId: controller.get_blocked_shots_by_season
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamBlockedShotsBySeason'
     
 components:
   schemas:
@@ -220,7 +239,7 @@ components:
           type: string
         overallFouls:
           type: number
-    TeamPassedPercentageBySeason:
+    TeamGoalKeeperSavesBySeason:
       type: object
       properties:
         teamId:
@@ -229,5 +248,16 @@ components:
           type: string
         teamLogo:
           type: string
-        overallBallPossession:
+        overallTeamGoalKeeperSavesBySeasonBySeason:
+          type: number
+    TeamBlockedShotsBySeason:
+      type: object
+      properties:
+        teamId:
+          type: integer
+        teamName:
+          type: string
+        teamLogo:
+          type: string
+        overallBlockedShotsBySeasonBySeason:
           type: number

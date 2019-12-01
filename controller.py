@@ -126,18 +126,18 @@ def get_ball_possession_by_season(seasonId):
         result = [models.TeamBallPossessionBySeason(*row) for row in cs.fetchall()]   
         return result
 
-def get_passed_percentage_by_season(seasonId):
+def get_goal_keeper_saves_by_season(seasonId):
     with db_cursor() as cs:
         cs.execute("""
-        SELECT team.teamId,team.teamName,team.teamLogo,AVG(home.passedPercentage) AS avgPassedPercentage
-    FROM (SELECT ranking.order,competition.home ,(statistic.passedPercentage->"$.home") AS passedPercentage
+        SELECT team.teamId,team.teamName,team.teamLogo,AVG(home.goalKeeperSaves) AS avgGoalKeeperSaves
+    FROM (SELECT ranking.order,competition.home ,(statistic.goalkeeperSaves->"$.home") AS goalKeeperSaves
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.home = ranking.teamId
 	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
           ORDER BY ranking.order
      ) AS home INNER JOIN
-     (SELECT ranking.order,competition.away ,(statistic.passedPercentage->"$.away") AS passedPercentage
+     (SELECT ranking.order,competition.away ,(statistic.goalkeeperSaves->"$.away") AS goalKeeperSaves
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.away = ranking.teamId
@@ -148,5 +148,50 @@ def get_passed_percentage_by_season(seasonId):
      GROUP BY home.home
         """,[seasonId,seasonId])
 
-        result = [models.TeamPassedPercentageBySeason(*row) for row in cs.fetchall()]   
+        result = [models.TeamGoalKeeperSavesBySeason(*row) for row in cs.fetchall()]   
         return result
+
+def get_blocked_shots_by_season(seasonId):
+    with db_cursor() as cs:
+        cs.execute("""
+        SELECT team.teamId,team.teamName,team.teamLogo,AVG(home.blockedShots) AS avgBlockedShots
+    FROM (SELECT ranking.order,competition.home ,(statistic.blockedShots->"$.home") AS blockedShots
+	FROM competition
+	INNER JOIN statistic ON competition.compId = statistic.statisticId
+    INNER JOIN ranking ON competition.home = ranking.teamId
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
+          ORDER BY ranking.order
+     ) AS home INNER JOIN
+     (SELECT ranking.order,competition.away ,(statistic.blockedShots->"$.away") AS blockedShots
+	FROM competition
+	INNER JOIN statistic ON competition.compId = statistic.statisticId
+    INNER JOIN ranking ON competition.away = ranking.teamId
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
+      ORDER BY ranking.order
+     ) AS away ON home.home = away.away
+     INNER JOIN team ON home.home = team.teamId
+     GROUP BY home.home
+        """,[seasonId,seasonId])
+
+        result = [models.TeamBlockedShotsBySeason(*row) for row in cs.fetchall()]   
+        return result
+
+
+
+# SELECT home.seasonId ,AVG(home.shotOnGoal) AS avgShotOnGoal
+#     FROM (SELECT competition.seasonId ,(statistic.shotsOnGoal->"$.home") AS shotOnGoal
+# 	FROM competition
+# 	INNER JOIN statistic ON competition.compId = statistic.statisticId
+#     INNER JOIN ranking ON competition.seasonId = ranking.seasonId
+# 	WHERE competition.home = 40 AND competition.home = ranking.teamId
+#           ORDER BY ranking.order
+#      ) AS home INNER JOIN
+#      (SELECT competition.seasonId ,(statistic.shotsOnGoal->"$.away") AS shotOngoal
+# 	FROM competition
+# 	INNER JOIN statistic ON competition.compId = statistic.statisticId
+#     INNER JOIN ranking ON competition.seasonId = ranking.seasonId
+# 	WHERE competition.away = 40 AND competition.away = ranking.teamId
+#       ORDER BY ranking.order
+#      ) AS away ON home.seasonId = away.seasonId
+     
+#      GROUP BY home.seasonId
