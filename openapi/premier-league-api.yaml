@@ -191,7 +191,25 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TeamPassBallBySeason'
-    
+  /statisticByTeamId/{teamId}:
+    parameters:
+    - name: teamId
+      in: path
+      required: true
+      schema:
+        type : integer
+    get:
+      summary: Returns a all of statistic of specific team from all season their have played.
+      operationId: controller.get_statistic_all_season_by_teamId
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StatisticOfTeamByTeamId'
 components:
   schemas:
     Team:
@@ -289,6 +307,27 @@ components:
           type: string
         teamLogo:
           type: string
+        overallTotalPasses:
+          type: number
+        overallPassAccurate:
+          type: number
+    StatisticOfTeamByTeamId:
+      type: object
+      properties:
+        seasonId:
+          type: integer
+        year:
+          type: string
+        overallShotOnGoal:
+          type: number
+        overallBlockedShots:
+          type: number
+        overallFouls:
+          type: number
+        overallBallPossession:
+          type: number
+        overallGoalKeeper:
+          type: number
         overallTotalPasses:
           type: number
         overallPassAccurate:
