@@ -48,14 +48,14 @@ def get_shot_on_goal_by_season(seasonId):
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.home = ranking.teamId
-	WHERE ranking.seasonId = %s AND competition.eventDate between '2018-08-10' and '2019-05-13'
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
           ORDER BY ranking.order
      ) AS home INNER JOIN
      (SELECT ranking.order,competition.away ,(statistic.shotsOnGoal->"$.away") AS shotOngoal
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.away = ranking.teamId
-	WHERE ranking.seasonId = %s AND competition.eventDate between '2018-08-10' and '2019-05-13'
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
       ORDER BY ranking.order
      ) AS away ON home.home = away.away
      GROUP BY home.home 
@@ -72,14 +72,14 @@ def get_fouls_by_season(seasonId):
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.home = ranking.teamId
-	WHERE ranking.seasonId = %s AND competition.eventDate between '2018-08-10' and '2019-05-13'
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
           ORDER BY ranking.order
      ) AS home INNER JOIN
      (SELECT ranking.order,competition.away ,(statistic.fouls->"$.away") AS fouls
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.away = ranking.teamId
-	WHERE ranking.seasonId = %s AND competition.eventDate between '2018-08-10' and '2019-05-13'
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
       ORDER BY ranking.order
      ) AS away ON home.home = away.away
      GROUP BY home.home
@@ -96,14 +96,14 @@ def get_ball_possession_by_season(seasonId):
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.home = ranking.teamId
-	WHERE ranking.seasonId = %s AND competition.eventDate between '2018-08-10' and '2019-05-13'
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
           ORDER BY ranking.order
      ) AS home INNER JOIN
      (SELECT ranking.order,competition.away ,(statistic.ballPossession->"$.away") AS BallPossession
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.away = ranking.teamId
-	WHERE ranking.seasonId = %s AND competition.eventDate between '2018-08-10' and '2019-05-13'
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
       ORDER BY ranking.order
      ) AS away ON home.home = away.away
      GROUP BY home.home
@@ -119,14 +119,14 @@ def get_passed_percentage_by_season(seasonId):
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.home = ranking.teamId
-	WHERE ranking.seasonId = %s AND competition.eventDate between '2018-08-10' and '2019-05-13'
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
           ORDER BY ranking.order
      ) AS home INNER JOIN
      (SELECT ranking.order,competition.away ,(statistic.passedPercentage->"$.away") AS passedPercentage
 	FROM competition
 	INNER JOIN statistic ON competition.compId = statistic.statisticId
     INNER JOIN ranking ON competition.away = ranking.teamId
-	WHERE ranking.seasonId = %s AND competition.eventDate between '2018-08-10' and '2019-05-13'
+	WHERE ranking.seasonId = %s AND ranking.seasonId = competition.seasonId
       ORDER BY ranking.order
      ) AS away ON home.home = away.away
      GROUP BY home.home
