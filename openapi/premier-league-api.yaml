@@ -248,7 +248,7 @@ components:
           type: string
         teamLogo:
           type: string
-        overallTeamGoalKeeperSavesBySeasonBySeason:
+        overallTeamGoalKeeperBySeason:
           type: number
     TeamBlockedShotsBySeason:
       type: object
@@ -259,5 +259,5 @@ components:
           type: string
         teamLogo:
           type: string
-        overallBlockedShotsBySeasonBySeason:
+        overallBlockedShotsBySeason:
           type: number
